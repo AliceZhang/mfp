@@ -10,7 +10,7 @@ import Progress from './components/Progress';
 import Header from './components/Header';
 
 const MarketingLazy = lazy(() => import('./components/MarketingApp'));
-const AuthLazy = lazy(() => import('./components/AuthApp'));
+const Auth2Lazy = lazy(() => import('./components/Auth2App'));
 const DashboardLazy = lazy(() => import('./components/DashboardApp'));
 
 const generateClassName = createGenerateClassName({
@@ -38,8 +38,8 @@ export default () => {
           />
           <Suspense fallback={<Progress />}>
             <Switch>
-              <Route path="/auth">
-                <AuthLazy onSignIn={() => setIsSignedIn(true)} />
+              <Route path="/auth2">
+                <Auth2Lazy onSignIn={() => setIsSignedIn(true)} />
               </Route>
               <Route path="/dashboard">
                 {!isSignedIn && <Redirect to="/" />}

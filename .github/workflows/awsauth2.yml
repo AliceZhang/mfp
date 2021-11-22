@@ -1,0 +1,32 @@
+name: Deploy auth2
+
+on:
+  push:
+    branches:
+      - master
+
+defaults:
+  run:
+    working-directory: packages/auth2
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - run: npm install
+      - run: npm run build
+
+      - uses: chrislennon/action-aws-cli@v1.1
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+      - run: aws s3 sync dist s3://${{ secrets.AWS_S3_BUCKET_NAME_2 }}/auth2/latest
+        env:
+          ACTIONS_ALLOW_UNSECURE_COMMANDS: 'true'
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_2 }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_2 }}    
+      - run: aws cloudfront create-invalidation --distribution-id ${{ secrets.AWS_DISTRIBUTION_ID_2 }} --paths "/auth2/latest/remoteEntry.js"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID_2 }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY_2 }}
